@@ -8,7 +8,7 @@ import '../../../../core/constants/app_typography.dart';
 import '../../../../core/routing/route_paths.dart';
 import '../../../../shared/widgets/buttons/secondary_button.dart';
 import '../providers/ride_controller.dart';
-
+import '../../../../shared/widgets/maps/driver_ride_map.dart';
 class RideInProgressScreen extends ConsumerStatefulWidget {
   const RideInProgressScreen({super.key});
 
@@ -22,17 +22,68 @@ class _RideInProgressScreenState
   Timer? _timer;
   int _elapsedSeconds = 0;
 
+  bool _rideStarted = false;
+
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      setState(() => _elapsedSeconds++);
-    });
-    _startRide();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _promptForOtp());
   }
 
-  Future<void> _startRide() async {
-    await ref.read(rideControllerProvider.notifier).startRide();
+  Future<void> _promptForOtp() async {
+    final otpController = TextEditingController();
+    final otp = await showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text('Enter Ride OTP', style: TextStyle(fontWeight: FontWeight.w900)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Ask the passenger for their 4-digit code to start the ride.'),
+            const SizedBox(height: 16),
+            TextField(
+              controller: otpController,
+              keyboardType: TextInputType.number,
+              maxLength: 4,
+              autofocus: true,
+              decoration: const InputDecoration(counterText: '', hintText: '••••'),
+              style: const TextStyle(fontSize: 24, letterSpacing: 8, fontWeight: FontWeight.w900),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, otpController.text.trim()),
+            child: const Text('Verify & Start'),
+          ),
+        ],
+      ),
+    );
+
+    if (otp == null || otp.length != 4) {
+      // Re-prompt if dismissed/empty — ride can't proceed without OTP.
+      if (mounted) _promptForOtp();
+      return;
+    }
+
+    final success = await ref.read(rideControllerProvider.notifier).startRide(otp);
+    if (!mounted) return;
+
+    if (success) {
+      setState(() => _rideStarted = true);
+      _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+        setState(() => _elapsedSeconds++);
+      });
+    } else {
+      final error = ref.read(rideControllerProvider).errorMessage;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error ?? 'Invalid OTP')),
+      );
+      _promptForOtp(); // let them try again
+    }
   }
 
   @override
@@ -52,7 +103,7 @@ class _RideInProgressScreenState
     final rideState = ref.watch(rideControllerProvider);
     final ride = rideState.activeRide;
 
-    if (ride == null) {
+    if (ride == null || !_rideStarted) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
@@ -90,13 +141,7 @@ class _RideInProgressScreenState
               ),
             ),
             Expanded(
-              child: Container(
-                color: AppColors.divider,
-                child: const Center(
-                  child: Icon(Icons.map_outlined,
-                      size: 48, color: AppColors.textHint),
-                ),
-              ),
+              child: DriverRideMap(ride: ride),
             ),
             Container(
               color: AppColors.surfaceWhite,

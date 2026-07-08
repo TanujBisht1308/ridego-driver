@@ -8,7 +8,7 @@ import '../../../../core/routing/route_paths.dart';
 import '../../../../shared/widgets/buttons/primary_button.dart';
 import '../../../../shared/widgets/navigation/app_top_bar.dart';
 import '../providers/ride_controller.dart';
-
+import '../../../../shared/widgets/maps/driver_ride_map.dart';
 class ReachedPickupScreen extends ConsumerWidget {
   const ReachedPickupScreen({super.key});
 
@@ -31,14 +31,7 @@ class ReachedPickupScreen extends ConsumerWidget {
           Expanded(
             child: Stack(
               children: [
-                Container(
-                  width: double.infinity,
-                  color: AppColors.divider,
-                  child: const Center(
-                    child: Icon(Icons.map_outlined,
-                        size: 48, color: AppColors.textHint),
-                  ),
-                ),
+                DriverRideMap(ride: ride),
                 Positioned(
                   top: AppSpacing.lg,
                   left: 0,

@@ -8,7 +8,7 @@ import '../../../../core/routing/route_paths.dart';
 import '../../../../shared/widgets/buttons/primary_button.dart';
 import '../../../../shared/widgets/buttons/secondary_button.dart';
 import '../providers/ride_controller.dart';
-
+import '../../../../shared/widgets/maps/driver_ride_map.dart';
 class RideRequestScreen extends ConsumerWidget {
   const RideRequestScreen({super.key});
 
@@ -55,19 +55,10 @@ class RideRequestScreen extends ConsumerWidget {
             Expanded(
               child: Container(
                 color: AppColors.background,
-                child: Center(
-                  child: Container(
-                    margin: const EdgeInsets.all(AppSpacing.lg),
-                    height: 200,
-                    decoration: BoxDecoration(
-                      color: AppColors.divider,
-                      borderRadius: BorderRadius.circular(AppRadius.lg),
-                    ),
-                    child: const Center(
-                      child: Icon(Icons.map_outlined,
-                          size: 48, color: AppColors.textHint),
-                    ),
-                  ),
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(AppRadius.lg),
+                  child: DriverRideMap(ride: ride),
                 ),
               ),
             ),

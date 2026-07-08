@@ -9,7 +9,7 @@ import '../../../../shared/widgets/buttons/primary_button.dart';
 import '../../../../shared/widgets/navigation/app_top_bar.dart';
 import '../../../../shared/widgets/cards/ride_info_card.dart';
 import '../providers/ride_controller.dart';
-
+import '../../../../shared/widgets/maps/driver_ride_map.dart';
 class RideAcceptedScreen extends ConsumerWidget {
   const RideAcceptedScreen({super.key});
 
@@ -51,17 +51,9 @@ class RideAcceptedScreen extends ConsumerWidget {
             ),
           ),
           Expanded(
-            child: Container(
-              margin: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.lg),
-              decoration: BoxDecoration(
-                color: AppColors.divider,
-                borderRadius: BorderRadius.circular(AppRadius.lg),
-              ),
-              child: const Center(
-                child: Icon(Icons.map_outlined,
-                    size: 48, color: AppColors.textHint),
-              ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+              child: DriverRideMap(ride: ride),
             ),
           ),
           const SizedBox(height: AppSpacing.md),

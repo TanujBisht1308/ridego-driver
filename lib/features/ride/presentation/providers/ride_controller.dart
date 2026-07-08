@@ -102,15 +102,17 @@ class RideController extends _$RideController {
     }
   }
 
-  Future<bool> startRide() async {
+ Future<bool> startRide(String otp) async {
     if (state.activeRide == null) return false;
-    state = state.copyWith(isLoading: true);
+    state = state.copyWith(isLoading: true, errorMessage: null);
     try {
-      await ref.read(rideRepositoryProvider).startRide(state.activeRide!.rideId);
+      await ref
+          .read(rideRepositoryProvider)
+          .startRide(state.activeRide!.rideId, otp);
       state = state.copyWith(isLoading: false);
       return true;
     } catch (e) {
-      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      state = state.copyWith(isLoading: false, errorMessage: 'Invalid OTP. Please check with the passenger.');
       return false;
     }
   }

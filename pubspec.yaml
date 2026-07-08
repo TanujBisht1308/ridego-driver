@@ -32,7 +32,9 @@ dependencies:
   flutter_secure_storage: ^9.2.2
   shared_preferences: ^2.2.3
 
+ 
   # Maps & Location
+  google_maps_flutter: ^2.9.0
  
 
 

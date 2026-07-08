@@ -41,10 +41,10 @@ class RideRemoteDataSource {
     );
   }
 
-  Future<void> startRide(String rideId) async {
+  Future<void> startRide(String rideId, String otp) async {
     await _dio.post(
       ApiConstants.startRide,
-      data: {'rideId': rideId},
+      data: {'rideId': rideId, 'otp': otp},
     );
   }
 

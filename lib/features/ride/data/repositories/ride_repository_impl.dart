@@ -23,7 +23,8 @@ class RideRepositoryImpl implements RideRepository {
   Future<void> reachedPickup(String rideId) => _remote.reachedPickup(rideId);
 
   @override
-  Future<void> startRide(String rideId) => _remote.startRide(rideId);
+  Future<void> startRide(String rideId, String otp) => _remote.startRide(rideId,otp);
+
 
   @override
   Future<RideSummaryEntity> completeRide(String rideId) =>

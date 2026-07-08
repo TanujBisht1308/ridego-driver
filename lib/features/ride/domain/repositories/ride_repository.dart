@@ -6,7 +6,7 @@ abstract class RideRepository {
   Future<RideEntity> acceptRide(String rideId);
   Future<void> rejectRide(String rideId);
   Future<void> reachedPickup(String rideId);
-  Future<void> startRide(String rideId);
+  Future<void> startRide(String rideId, String otp);
   Future<RideSummaryEntity> completeRide(String rideId);
   void joinRideRoom(String rideId);
   void streamLocation(String rideId, double lat, double lng);
