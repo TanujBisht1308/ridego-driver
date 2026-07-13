@@ -3,7 +3,7 @@ class ApiConstants {
 
   // Replace 192.168.1.x with your actual local IP from ipconfig
   // Must be on the same WiFi network as your phone
-  static const String baseUrl = 'http://192.168.0.191:8000/api';
+  static const String baseUrl = 'http://192.168.0.194:8000/api';
 
   // Auth
   static const String sendOtp = '/auth/send-otp';
